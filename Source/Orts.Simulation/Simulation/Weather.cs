@@ -1,4 +1,4 @@
-﻿// COPYRIGHT 2009 - 2023 by the Open Rails project.
+// COPYRIGHT 2009 - 2023 by the Open Rails project.
 //
 // This file is part of Open Rails.
 //
@@ -13,7 +13,7 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
+// along with Open Rails.  If not, see <http://www.gnu.org/licenses/>
 
 using System;
 using Microsoft.Xna.Framework;
@@ -41,9 +41,9 @@ namespace Orts.Simulation
         //      Chart of precipitation type vs air temperature and humidity
 
         // Final values are twice the heavy value, as a reasonable maximum possible value for interpolation
-        public static readonly float[] DrizzleRateMMpH = new[] { 0.0f, 0.1f, 0.5f, 1.0f };
-        public static readonly float[] RainRateMMpH = new[] { 0.0f, 2.5f, 10.0f, 20.0f };
-        public static readonly float[] SnowRateMMpH = new[] { 0.0f, 1.0f, 5.0f, 10.0f };
+        private static readonly float[] DrizzleRateMMpH = new[] { 0.0f, 0.1f, 0.5f, 1.0f };
+        private static readonly float[] RainRateMMpH = new[] { 0.0f, 2.5f, 10.0f, 20.0f };
+        private static readonly float[] SnowRateMMpH = new[] { 0.0f, 1.0f, 5.0f, 10.0f };
 
         // Wind speed (Beaufort scale)
         //   Number    Description        Speed (m/s)
@@ -60,14 +60,14 @@ namespace Orts.Simulation
         //   10        Storm              >24.5
         //   11        Violent storm      >28.5
         //   12        Hurricane-force    >32.7
-        public static readonly float[] WindSpeedBeaufortMpS = new[] { 0.0f, 0.5f, 1.6f, 3.4f, 5.5f, 8.0f, 10.8f, 13.9f, 17.2f, 20.8f, 24.5f, 28.5f, 32.7f };
+        private static readonly float[] WindSpeedBeaufortMpS = new[] { 0.0f, 0.5f, 1.6f, 3.4f, 5.5f, 8.0f, 10.8f, 13.9f, 17.2f, 20.8f, 24.5f, 28.5f, 32.7f };
 
         // Wind gusts ("Rafale". Glossaire météorologique (in French). Météo-France. Retrieved 2018-11-15.):
         //   Type        Excess speed (m/s)
         //   Light       >5.1 (10-15 knots)
         //   Moderate    >7.7 (15-25 knots)
         //   Heavy       >12.9 (>25 knots)
-        public static readonly float[] WindSpeedGustMpS = new[] { 5.1f, 7.7f, 12.9f, 25.8f };
+        private static readonly float[] WindSpeedGustMpS = new[] { 5.1f, 7.7f, 12.9f, 25.8f };
 
         public enum Condition
         {
@@ -75,38 +75,76 @@ namespace Orts.Simulation
             Moderate,
             Heavy,
         }
+
+        public static float[] GetDrizzleRateMMpH() { return DrizzleRateMMpH; }
+        public static float[] GetRainRateMMpH() { return RainRateMMpH; }
+        public static float[] GetSnowRateMMpH() { return SnowRateMMpH; }
+        public static float[] GetWindSpeedBeaufortMpS() { return WindSpeedBeaufortMpS; }
+        public static float[] GetWindSpeedGustMpS() { return WindSpeedGustMpS; }
     }
 
     public class Weather
     {
         // Fog/visibility distance. Ranges from 10m (can't see anything), 5km (medium), 20km (clear) to 100km (clear arctic).
-        public float VisibilityM;
+        private float visibilityM;
 
         // Cloud cover factor: 0.0 = almost no clouds; 0.1 = wispy clouds; 1.0 = total overcast.
-        public float CloudCoverFactor;
+        private float cloudCoverFactor;
 
         // Precipitation intensity in particles per second per meter^2 (PPSPM2).
-        public float PrecipitationIntensityPPSPM2;
+        private float precipitationIntensityPPSPM2;
 
         // Precipitation liquidity; 1 = rain, 0 = snow; intermediate values possible with dynamic weather.
-        public float PrecipitationLiquidity;
+        private float precipitationLiquidity;
 
         // Wind has an average direction (normalized vector pointing WITH wind movement) and speed, and instantaneous direction and speed (e.g. gusts).
-        public Vector2 WindAverageDirection;
-        public Vector2 WindInstantaneousDirection;
-        public float WindAverageSpeedMpS;
-        public float WindInstantaneousSpeedMpS;
+        private Vector2 windAverageDirection;
+        private Vector2 windInstantaneousDirection;
+        private float windAverageSpeedMpS;
+        private float windInstantaneousSpeedMpS;
 
-        public float WindAverageDirectionRad
+        public float GetVisibilityM() { return visibilityM; }
+        public void SetVisibilityM(float value) { visibilityM = value; }
+
+        public float GetCloudCoverFactor() { return cloudCoverFactor; }
+        public void SetCloudCoverFactor(float value) { cloudCoverFactor = value; }
+
+        public float GetPrecipitationIntensityPPSPM2() { return precipitationIntensityPPSPM2; }
+        public void SetPrecipitationIntensityPPSPM2(float value) { precipitationIntensityPPSPM2 = value; }
+
+        public float GetPrecipitationLiquidity() { return precipitationLiquidity; }
+        public void SetPrecipitationLiquidity(float value) { precipitationLiquidity = value; }
+
+        public Vector2 GetWindAverageDirection() { return windAverageDirection; }
+        public void SetWindAverageDirection(Vector2 value) { windAverageDirection = value; }
+
+        public Vector2 GetWindInstantaneousDirection() { return windInstantaneousDirection; }
+        public void SetWindInstantaneousDirection(Vector2 value) { windInstantaneousDirection = value; }
+
+        public float GetWindAverageSpeedMpS() { return windAverageSpeedMpS; }
+        public void SetWindAverageSpeedMpS(float value) { windAverageSpeedMpS = value; }
+
+        public float GetWindInstantaneousSpeedMpS() { return windInstantaneousSpeedMpS; }
+        public void SetWindInstantaneousSpeedMpS(float value) { windInstantaneousSpeedMpS = value; }
+
+        public float GetWindAverageDirectionRad()
         {
-            get => (float)Math.Atan2(WindAverageDirection.X, -WindAverageDirection.Y);
-            set => WindAverageDirection = new Vector2((float)Math.Sin(value), -(float)Math.Cos(value));
+            return (float)Math.Atan2(windAverageDirection.X, -windAverageDirection.Y);
         }
 
-        public float WindInstantaneousDirectionRad
+        public void SetWindAverageDirectionRad(float value)
         {
-            get => (float)Math.Atan2(WindInstantaneousDirection.X, -WindInstantaneousDirection.Y);
-            set => WindInstantaneousDirection = new Vector2((float)Math.Sin(value), -(float)Math.Cos(value));
+            windAverageDirection = new Vector2((float)Math.Sin(value), -(float)Math.Cos(value));
+        }
+
+        public float GetWindInstantaneousDirectionRad()
+        {
+            return (float)Math.Atan2(windInstantaneousDirection.X, -windInstantaneousDirection.Y);
+        }
+
+        public void SetWindInstantaneousDirectionRad(float value)
+        {
+            windInstantaneousDirection = new Vector2((float)Math.Sin(value), -(float)Math.Cos(value));
         }
     }
 }
